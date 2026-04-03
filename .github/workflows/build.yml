@@ -1,29 +1,41 @@
 name: Build Daba Chess APK
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.6'
+
       - name: Download Stockfish for Android
         run: |
           wget -q "https://github.com/official-stockfish/Stockfish/releases/download/sf_17/stockfish-android-armv8.tar" -O sf.tar
           tar -xf sf.tar
-          find . -name "stockfish" -not -path "./.git/*" -not -name "*.tar" | head -1 | xargs -I{} cp {} app/src/main/assets/stockfish
+          mkdir -p app/src/main/assets
+          find . -type f -name "stockfish*" -not -path "./.git/*" | head -1 | xargs -I{} cp {} app/src/main/assets/stockfish
           chmod +x app/src/main/assets/stockfish
           ls -la app/src/main/assets/
+
       - name: Build APK
         run: gradle assembleDebug
+
       - uses: actions/upload-artifact@v4
         with:
           name: daba-chess-apk
