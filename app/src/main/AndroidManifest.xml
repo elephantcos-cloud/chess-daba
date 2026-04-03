@@ -4,7 +4,7 @@
         android:allowBackup="true"
         android:label="দাবা"
         android:theme="@style/Theme.AppCompat.NoActionBar"
-        android:icon="@drawable/logo"
+        android:icon="@mipmap/ic_launcher"
         android:extractNativeLibs="true">
         <activity
             android:name=".MainActivity"
